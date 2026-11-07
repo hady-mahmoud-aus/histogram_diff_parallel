@@ -1,0 +1,33 @@
+# Build output and temporary files
+/build/
+/bin/
+*.o
+*.obj
+*.exe
+*.out
+
+# Python tooling
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Editor and OS noise
+.DS_Store
+.vscode/
+.idea/
+*~
+
+# Temporary local profiling artifacts
+*.profraw
+*.profdata
+perf.data*
+
+# Non-code files
+*.md
+/references/
+Makefile
+
+# Non-source code directories
+/tests/
+/benchmarks/

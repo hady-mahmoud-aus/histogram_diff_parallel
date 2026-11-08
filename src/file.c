@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <string.h>
 
 int file_load(const char *path, FileData *out){
     // open file and read in binary
@@ -102,10 +101,11 @@ int file_split_lines(FileData *file){
     }
 
     Line *lines;
-    size_t line_count = // if last line is not terminated, add the line
-        file->bytes[file->byte_count - 1] == '\n' ? 0 : 1;
-    size_t offset = 0;
 
+    // if last line is not terminated, add the line
+    size_t line_count = file->bytes[file->byte_count - 1] == '\n' ? 0 : 1;
+
+    size_t offset = 0;
     size_t current_line = 0;
 
     for (size_t i = 0; i < file->byte_count; i++) {
@@ -188,4 +188,18 @@ bool file_lines_equal(  // two different lines might have the same hash; require
     return true;
 
     return memcmp(a->bytes + line_a->offset, b->bytes + line_b->offset, line_a->length) == 0;
+}
+
+
+
+void file_free(FileData *file){
+    if (file == NULL) return;
+
+    free(file->bytes);
+    file->bytes = NULL;
+    file->byte_count = 0;
+
+    free(file->lines);
+    file->lines = NULL;
+    file->line_count = 0;
 }

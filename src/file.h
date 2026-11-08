@@ -35,4 +35,6 @@ bool file_lines_equal(  // two different lines might have the same hash; require
     const FileData *b, size_t index_b
 );
 
+void file_free(FileData *file);
+
 #endif

@@ -1,9 +1,9 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef enum {
     LINE_END_NONE,

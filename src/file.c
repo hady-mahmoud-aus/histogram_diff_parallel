@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 
 int file_load(const char *path, FileData *out){
+    if (path == NULL || out == NULL) return -1;
     // open file and read in binary
     FILE *file = fopen(path, "rb");
 

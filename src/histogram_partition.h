@@ -68,4 +68,32 @@ HistogramPartitionStatus histogram_partition_all(
 int histogram_range_to_git(HistogramRange range,
                            int *line1, int *count1, int *line2, int *count2);
 
+#ifdef _OPENMP
+/* Initial task-only implementation. Limit CLI/API requests to a practical
+ * positive range; the OpenMP runtime may impose a smaller actual team. */
+#define HISTOGRAM_MAX_THREADS 1024
+#define HISTOGRAM_DEFAULT_CUTOFF ((size_t)1024)
+
+typedef struct {
+    int actual_threads;
+    size_t explicit_tasks; /* all explicit child tasks executed */
+    int task_workers;      /* workers executing an explicit child task */
+    int region_workers;    /* workers entering a region in task mode */
+} HistogramParallelStats;
+
+/* Diff the entire file pair with one OpenMP team. cutoff is the combined
+ * old/new line count per child. Both children must meet it before spawning.
+ * Inputs/classes and flag metadata must remain read-only, and each sibling
+ * owns its disjoint flag ranges. A callback must be reentrant and may write
+ * only the provided range; context must be immutable or independently safe.
+ * All tasks finish before return. On non-OK status flags are incomplete and
+ * must not be used for output; pending has left-first error precedence.
+ * Pass stats == NULL for normal, non-instrumented execution. */
+HistogramPartitionStatus histogram_partition_parallel(
+    const FileData *old_file, const FileData *new_file,
+    const LineClasses *classes, HistogramChangeFlags *flags,
+    HistogramClassicFallback callback, void *context, HistogramRange *pending,
+    int threads, size_t cutoff, HistogramParallelStats *stats);
+#endif
+
 #endif
